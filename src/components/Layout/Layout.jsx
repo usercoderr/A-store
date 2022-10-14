@@ -6,15 +6,11 @@ import { Header } from "../Header";
 export const Layout = () => {
   return (
     <>
-      <header>
-        <Header />
-      </header>
+      <Header />
       <div>
         <Routers />
       </div>
-      <footer>
-        <Footer />
-      </footer>
+      <Footer />
     </>
   );
 };

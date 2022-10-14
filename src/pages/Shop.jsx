@@ -1,7 +1,6 @@
-import React from 'react'
+import React from "react";
+import { Helmet } from "../components/Helmet/Helmet";
 
 export const Shop = () => {
-  return (
-    <div>Shop</div>
-  )
-}
+  return <Helmet title={`Shop`}></Helmet>;
+};
