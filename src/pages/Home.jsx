@@ -1,6 +1,5 @@
 import React from "react";
 import { Col, Container, Row } from "reactstrap";
-import { Helmet } from "../components/Helmet/Helmet";
 import heroImg from "../assets/images/hero-img.png";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -12,6 +11,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import counterImg from "../assets/images/counter-timer-img.png";
 import { Clock } from "../components/UI/Clock";
+import Helmet from "../components/Helmet/Helmet";
 export const Home = () => {
   const [trendingProduct, setTrendingProduct] = useState([]);
   const [bestSalesProduct, setBestSalesProduct] = useState([]);
