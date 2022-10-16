@@ -2,11 +2,14 @@ import { motion } from "framer-motion";
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-
 import { Container, Row } from "reactstrap";
 import logo from "../../assets/images/eco-logo.png";
 import userIcon from "../../assets/images/user-icon.png";
+import { useAuth } from "../../custom-hooks/useAuth";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase.config";
 import "./Header.css";
+import { toast } from "react-toastify";
 
 const nav__links = [
   {
@@ -26,11 +29,13 @@ const nav__links = [
   },
 ];
 export const Header = () => {
+  const profileActionRef = useRef(null);
   const headerRef = useRef(null);
-  const menuRef = useRef(null)
-  const navigate = useNavigate()
+  const menuRef = useRef(null);
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
 
-  const totalQuantity = useSelector(state => state.cart.totalQuantity)
+  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
 
   const stickyHeaderFunc = () => {
     window.addEventListener("scroll", () => {
@@ -45,31 +50,44 @@ export const Header = () => {
     });
   };
 
+  const logout = () => {
+    signOut(auth)
+      .then(() => {
+        toast.success("Logged out");
+        navigate("/home");
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
+
   useEffect(() => {
     stickyHeaderFunc();
 
     return () => window.removeEventListener("scroll", stickyHeaderFunc);
   });
 
-  const menuToggle = () => menuRef.current.classList.toggle("active__menu")
+  const menuToggle = () => menuRef.current.classList.toggle("active__menu");
 
   const navigateToCart = () => {
-    navigate('/cart')
-  }
+    navigate("/cart");
+  };
 
+  const toggleProfileActions = () =>
+    profileActionRef.current.classList.toggle("show__profileActions");
   return (
     <header className="header" ref={headerRef}>
       <Container>
         <Row>
           <div className="nav_wrapper">
-          <Link to='/home'>
-            <div className="logo">
-              <img src={logo} alt="logo" />
-              <div>
-                <h1>A Store</h1>
+            <Link to="/home">
+              <div className="logo">
+                <img src={logo} alt="logo" />
+                <div>
+                  <h1>A Store</h1>
+                </div>
               </div>
-            </div>
-          </Link>
+            </Link>
             <div className="navigation" ref={menuRef} onClick={menuToggle}>
               <ul className="menu">
                 {nav__links.map((item) => (
@@ -95,9 +113,28 @@ export const Header = () => {
                 <i class="ri-shopping-cart-line"></i>
                 <span className="badge">{totalQuantity}</span>
               </span>
-              <span>
-                <motion.img whileTap={{ scale: 1.2 }} src={userIcon} alt="" />
-              </span>
+              <div className="profile">
+                <motion.img
+                  whileTap={{ scale: 1.2 }}
+                  src={currentUser ? currentUser.photoUrl : userIcon}
+                  alt=""
+                  onClick={toggleProfileActions}
+                />
+                <div
+                  className="profile__actions"
+                  ref={profileActionRef}
+                  onClick={toggleProfileActions}
+                >
+                  {currentUser ? (
+                    <span onClick={logout}>Logout</span>
+                  ) : (
+                    <div>
+                      <Link to="/signup">Signup</Link>
+                      <Link to="/login">Login</Link>
+                    </div>
+                  )}
+                </div>
+              </div>
               <div className="mobile_menu">
                 <span onClick={menuToggle}>
                   <i class="ri-menu-5-line"></i>
